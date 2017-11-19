@@ -9,7 +9,7 @@ namespace Biblioteka.Controllers
 {
     public class AuthorController : Controller
     {
-        private static Library lib = new Library();
+        public static Library lib = new Library();
         // GET: Author
         public ActionResult Index(int author = 0)
         {
@@ -20,6 +20,13 @@ namespace Biblioteka.Controllers
 
         public ActionResult All() {
             return View(lib.Authors);
+        }
+        
+        [HttpDelete]
+        public ActionResult Delete(int author) {
+            Author a = lib.Authors[author];
+            lib.Authors.Remove(a);
+            return View("All", lib.Authors);
         }
     }
 }
