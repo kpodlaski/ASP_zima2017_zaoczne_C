@@ -29,7 +29,7 @@ namespace Biblioteka.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Book book = db.Books.Find(id);
-            Book book = AuthorController.lib.Books[(int) id];
+            Book book = AuthorController.lib.Books.Single(b => b.Id == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -54,6 +54,7 @@ namespace Biblioteka.Controllers
             {
                 //db.Books.Add(book);
                 //db.SaveChanges();
+                book.Id = AuthorController.lib.Books.Max(b => b.Id) + 1;
                 AuthorController.lib.Books.Add(book);
                 return RedirectToAction("Index");
             }
@@ -69,7 +70,7 @@ namespace Biblioteka.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Book book = db.Books.Find(id);
-            Book book = AuthorController.lib.Books[(int)id];
+            Book book = AuthorController.lib.Books.Single(b => b.Id == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -88,7 +89,7 @@ namespace Biblioteka.Controllers
             {
                 //db.Entry(book).State = EntityState.Modified;
                 //db.SaveChanges();
-                Book _book = AuthorController.lib.Books[book.Id];
+                Book _book = AuthorController.lib.Books.Single(b => b.Id == book.Id);
                 _book.Author = book.Author;
                 _book.Title = book.Title;
                 return RedirectToAction("Index");
@@ -104,7 +105,7 @@ namespace Biblioteka.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //Book book = db.Books.Find(id);
-            Book book = AuthorController.lib.Books[(int)id];
+            Book book = AuthorController.lib.Books.Single(b => b.Id == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -120,7 +121,7 @@ namespace Biblioteka.Controllers
             //Book book = db.Books.Find(id);
             //db.Books.Remove(book);
             //db.SaveChanges();
-            Book book = AuthorController.lib.Books[(int)id];
+            Book book = AuthorController.lib.Books.Single(b => b.Id == id);
             AuthorController.lib.Books.Remove(book);
             return RedirectToAction("Index");
         }
@@ -129,7 +130,7 @@ namespace Biblioteka.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
             }
             base.Dispose(disposing);
         }
