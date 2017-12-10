@@ -12,18 +12,34 @@
         <h2>Search by ID</h2>
         
             id:<input type="text" id="prodId" size="5" /><br />
-            Nazwa:<input type="text" id="name" size="15" /><br />
+            <p class="ukryte" style="display:none">
+            Nazwa:<input type="text" id="name" size="15" />  <br/>
             Kategoria:<input type="text" id="category" size="15" /><br />
-            Cena:<input type="text" id="price" size="5" /><br />
+            Cena:<input type="text" id="price" size="5" />
+        </p>
             <input type="button" value="Search" onclick="find();" />
+        <p class="ukryte" style="display:none">
             <input type="button" value="Update" onclick="update();" />
-            <p id="product" />
+            <input type="button" value="New" onclick="insert();"/>
+            <input type="button" value="Delete" onclick="del();" />
+            </p>
+<p id="product" />
         
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.3.min.js"></script>
     <script>
-    var uri = 'api/products';
+        var uri = 'api/products';
+
+    $(document).ready(function (s) {
+            var id = getQueryVariable("id")
+            if (id) {
+                alert(id);
+                $('#prodId').val(id);
+                find();
+            }
+    });
+        
     function find() {
       var id = $('#prodId').val();
       $.getJSON(uri + '/' + id)
@@ -32,6 +48,7 @@
               $('#name').val(data.Name);
               $('#category').val(data.Category);
               $('#price').val(data.Price);
+              $('.ukryte').slideDown(300);
           })
           .fail(function (jqXHR, textStatus, err) {
             $('#product').text('Error: ' + err);
@@ -53,7 +70,47 @@
             url: uri + '/' + _data.Id,
             data: JSON.stringify(_data),
             success: function (result) {
-                $('#product').text('Wysłano: ');
+                $('#product').text('Wykonano Update ');
+            },
+            failure: function (err) {
+                $('#product').text('Error: ' + err);
+            }
+
+        });
+    }
+
+    function insert() {
+        var _data = new Object();
+        _data.Id = $('#prodId').val();
+        _data.Name = $('#name').val();
+        _data.Category = $('#category').val();
+        _data.Price = $('#price').val();
+        //alert(JSON.stringify(_data));
+
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json',
+            url: uri,
+            data: JSON.stringify(_data),
+            success: function (result) {
+                $('#product').text('Dodano Nowy ');
+            },
+            failure: function (err) {
+                $('#product').text('Error: ' + err);
+            }
+
+        });
+    }
+
+    function del() {
+        var Id = $('#prodId').val();
+
+        $.ajax({
+            type: 'DELETE',
+            url: uri + '/' + Id,
+            success: function (result) {
+                $('#product').text('Skasowano element ');
             },
             failure: function (err) {
                 $('#product').text('Error: ' + err);
@@ -62,6 +119,16 @@
         });
     }
    
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) { return pair[1]; }
+        }
+        return (false);
+    }
+
     </script>
 </body>
 </html>
