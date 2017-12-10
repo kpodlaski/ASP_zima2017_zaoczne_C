@@ -16,7 +16,7 @@
             Kategoria:<input type="text" id="category" size="15" /><br />
             Cena:<input type="text" id="price" size="5" /><br />
             <input type="button" value="Search" onclick="find();" />
-            
+            <input type="button" value="Update" onclick="update();" />
             <p id="product" />
         
     </div>
@@ -28,16 +28,39 @@
       var id = $('#prodId').val();
       $.getJSON(uri + '/' + id)
           .done(function (data) {
-              
-              $('#name').text(data.Name);
-              $('#category').text(data.Category);
-              $('#price').text(data.Price);
+              //alert( JSON.stringify(data) );
+              $('#name').val(data.Name);
+              $('#category').val(data.Category);
+              $('#price').val(data.Price);
           })
           .fail(function (jqXHR, textStatus, err) {
             $('#product').text('Error: ' + err);
           });
     }
+    
+    function update() {
+        var _data = new Object();
+        _data.Id = $('#prodId').val();
+        _data.Name = $('#name').val();
+        _data.Category = $('#category').val();
+        _data.Price = $('#price').val();
+        //alert(JSON.stringify(_data));
 
+        $.ajax({
+            dataType: 'json',
+            type: 'PUT',
+            contentType: 'application/json',
+            url: uri + '/' + _data.Id,
+            data: JSON.stringify(_data),
+            success: function (result) {
+                $('#product').text('Wysłano: ');
+            },
+            failure: function (err) {
+                $('#product').text('Error: ' + err);
+            }
+
+        });
+    }
    
     </script>
 </body>
