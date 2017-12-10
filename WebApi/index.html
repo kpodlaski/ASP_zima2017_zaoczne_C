@@ -27,13 +27,17 @@
             // On success, 'data' contains a list of products.
             $.each(data, function (key, item) {
               // Add a list item for the product.
-              $('<li>', { text: formatItem(item) }).appendTo($('#products'));
+                $('<li>', { text: formatItem(item) }).append(
+                    '<img src="images/edit-icon.png" height="20" onclick="goTo('+item.Id+')"/>')
+                    .appendTo($('#products'));
             });
           });
     });
 
     function formatItem(item) {
-      return item.Name + ': $' + item.Price;
+        return item.Name + ': $' + item.Price;
+     
+
     }
 
     function find() {
@@ -45,6 +49,10 @@
           .fail(function (jqXHR, textStatus, err) {
             $('#product').text('Error: ' + err);
           });
+    }
+
+    function goTo(id) {
+        window.location.href = "product.html?id=" + id;
     }
     </script>
 </body>
