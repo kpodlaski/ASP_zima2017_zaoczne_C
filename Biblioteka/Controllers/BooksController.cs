@@ -71,6 +71,12 @@ namespace Biblioteka.Controllers
             }
             //Book book = db.Books.Find(id);
             Book book = AuthorController.lib.Books.Single(b => b.Id == id);
+            
+            ViewBag.Authors = new SelectList(
+                AuthorController.lib.Authors.Select((a) => new { Id = a.Id, Text = a.Name + " " + a.Surname }), 
+                "Id", 
+                "Text"
+            );
             if (book == null)
             {
                 return HttpNotFound();
@@ -83,14 +89,15 @@ namespace Biblioteka.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title")] Book book)
+        public ActionResult Edit([Bind(Include = "Id,Title")] Book book, int author)
         {
             if (ModelState.IsValid)
             {
                 //db.Entry(book).State = EntityState.Modified;
                 //db.SaveChanges();
+                Author _author = AuthorController.lib.Authors.Single(a => a.Id == author);
                 Book _book = AuthorController.lib.Books.Single(b => b.Id == book.Id);
-                _book.Author = book.Author;
+                _book.Author = _author;
                 _book.Title = book.Title;
                 return RedirectToAction("Index");
             }
